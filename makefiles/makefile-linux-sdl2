@@ -14,11 +14,7 @@ ZLIB_FLAGS=
 ZLIB_LIBS=-lz
 
 #OPENGL
-OPENGL_LIB=-framework OpenGL
-
-# Mac support
-OSXCOMPAT = osx/macsupport.m -framework Cocoa -framework Foundation -framework AppKit -framework ApplicationServices -framework CoreVideo -framework CoreAudio -framework AudioToolbox -framework AudioUnit -framework IOKit -framework ForceFeedback -framework Carbon -l iconv
-
+OPENGL_LIB=
 
 CFLAGS=$(FLAGS) -I$(INCDIR) -I$(INCDIR)/gui -Wall $(SDL_FLAGS) $(ZLIB_FLAGS) -fno-strict-aliasing -fPIC -ansi -DNO_OPENGL -DTCOD_SDL2
 TEMP=/tmp
@@ -178,13 +174,13 @@ GUIOBJS_RELEASE= \
 
 all : debug release
 
-debug : libtcod_debug.dylib libtcod_debug.a \
-       libtcodxx_debug.dylib libtcodxx_debug.a \
-       libtcodgui_debug.dylib libtcodgui_debug.a
+debug : libtcod_debug.so libtcod_debug.a \
+       libtcodxx_debug.so libtcodxx_debug.a \
+       libtcodgui_debug.so libtcodgui_debug.a
 
-release : libtcod.dylib libtcod.a \
-	libtcodxx.dylib libtcodxx.a \
-	libtcodgui.dylib libtcodgui.a
+release : libtcod.so libtcod.a \
+	libtcodxx.so libtcodxx.a \
+	libtcodgui.so libtcodgui.a
 
 $(TEMP)/libtcod/debug/png :
 	mkdir -p $@
@@ -222,23 +218,23 @@ libtcodgui.a : $(TEMP)/libtcod/release/gui $(GUIOBJS_RELEASE)
 libtcodgui_debug.a : $(TEMP)/libtcod/debug/gui $(GUIOBJS_DEBUG)
 	ar -r $@ $(GUIOBJS_DEBUG)
 
-libtcod.dylib : $(TEMP)/libtcod/release/png $(LIBOBJS_C_RELEASE)
-	g++ -shared -Wl,-install_name,$@ -o $@ $(LIBOBJS_C_RELEASE) $(OSXCOMPAT) $(ZLIB_LIBS) $(SDL_LIBS) $(CFLAGS) $(OPENGL_LIB)
+libtcod.so : $(TEMP)/libtcod/release/png $(LIBOBJS_C_RELEASE)
+	g++ -shared -o $@ $(LIBOBJS_C_RELEASE) $(ZLIB_LIBS) $(SDL_LIBS) $(CFLAGS) $(OPENGL_LIB)
 
-libtcodxx.dylib : $(TEMP)/libtcod/release/png $(LIBOBJS_CPP_RELEASE)
-	g++ -shared -Wl,-install_name,$@ -o $@ $(LIBOBJS_CPP_RELEASE) $(OSXCOMPAT) -L. -ltcod $(CFLAGS)
+libtcodxx.so : $(TEMP)/libtcod/release/png $(LIBOBJS_CPP_RELEASE)
+	g++ -shared -o $@ $(LIBOBJS_CPP_RELEASE) -L. -ltcod $(CFLAGS)
 
-libtcodgui.dylib : $(TEMP)/libtcod/release/gui $(GUIOBJS_RELEASE)
-	g++ -shared -Wl,-install_name,$@ -o $@ $(GUIOBJS_RELEASE) $(OSXCOMPAT) -L. -ltcod -ltcodxx $(CFLAGS)
+libtcodgui.so : $(TEMP)/libtcod/release/gui $(GUIOBJS_RELEASE)
+	g++ -shared -o $@ $(GUIOBJS_RELEASE) -L. -ltcod -ltcodxx $(CFLAGS)
 
-libtcod_debug.dylib : $(TEMP)/libtcod/debug/png $(LIBOBJS_C_DEBUG)
-	g++ -shared -Wl,-install_name,$@ -o $@ $(LIBOBJS_C_DEBUG) $(OSXCOMPAT) $(ZLIB_LIBS) $(SDL_LIBS) $(CFLAGS) $(OPENGL_LIB)
+libtcod_debug.so : $(TEMP)/libtcod/debug/png $(LIBOBJS_C_DEBUG)
+	g++ -shared -o $@ $(LIBOBJS_C_DEBUG) $(ZLIB_LIBS) $(SDL_LIBS) $(CFLAGS) $(OPENGL_LIB)
 
-libtcodxx_debug.dylib : $(TEMP)/libtcod/debug/png $(LIBOBJS_CPP_DEBUG)
-	g++ -shared -Wl,-install_name,$@ -o $@ $(LIBOBJS_CPP_DEBUG) $(OSXCOMPAT) -L. -ltcod_debug $(CFLAGS)
+libtcodxx_debug.so : $(TEMP)/libtcod/debug/png $(LIBOBJS_CPP_DEBUG)
+	g++ -shared -o $@ $(LIBOBJS_CPP_DEBUG) -L. -ltcod_debug $(CFLAGS)
 
-libtcodgui_debug.dylib : $(TEMP)/libtcod/debug/gui $(GUIOBJS_DEBUG)
-	g++ -shared -Wl,-install_name,$@ -o $@ $(GUIOBJS_DEBUG) $(OSXCOMPAT) -L. -ltcod_debug -ltcodxx_debug $(CFLAGS)
+libtcodgui_debug.so : $(TEMP)/libtcod/debug/gui $(GUIOBJS_DEBUG)
+	g++ -shared -o $@ $(GUIOBJS_DEBUG) -L. -ltcod_debug -ltcodxx_debug $(CFLAGS)
 
 install : libtcod.a libtcod_debug.a libtcodxx.a libtcodxx_debug.a \
 	libtcodgui.a libtcodgui_debug.a
@@ -247,5 +243,5 @@ install : libtcod.a libtcod_debug.a libtcodxx.a libtcodxx_debug.a \
 	cp -R include/* $(INCLUDE_INSTALL_PATH)/TCOD
 
 clean :
-	\rm -f $(LIBOBJS_C_RELEASE) $(LIBOBJS_CPP_RELEASE) $(GUIOBJS_RELEASE) $(LIBOBJS_C_DEBUG) $(LIBOBJS_CPP_DEBUG) $(GUIOBJS_DEBUG) libtcod.a libtcod_debug.a libtcodxx.a libtcodxx_debug.a libtcodgui.a libtcodgui_debug.a libtcod.dylib libtcodxx.dylib libtcodgui.dylib libtcod_debug.dylib libtcodxx_debug.dylib libtcodgui_debug.dylib libtcodpy.pyc
+	\rm -f $(LIBOBJS_C_RELEASE) $(LIBOBJS_CPP_RELEASE) $(GUIOBJS_RELEASE) $(LIBOBJS_C_DEBUG) $(LIBOBJS_CPP_DEBUG) $(GUIOBJS_DEBUG) libtcod.a libtcod_debug.a libtcodxx.a libtcodxx_debug.a libtcodgui.a libtcodgui_debug.a libtcod.so libtcodxx.so libtcodgui.so libtcod_debug.so libtcodxx_debug.so libtcodgui_debug.so libtcodpy.pyc
 
