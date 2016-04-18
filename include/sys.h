@@ -66,10 +66,12 @@ TCODLIB_API TCOD_event_t TCOD_sys_wait_for_event(int eventMask, TCOD_key_t *key,
 TCODLIB_API TCOD_event_t TCOD_sys_check_for_event(int eventMask, TCOD_key_t *key, TCOD_mouse_t *mouse);
 
 /* filesystem stuff */
+#ifndef TCOD_IOS
 TCODLIB_API bool TCOD_sys_create_directory(const char *path);
 TCODLIB_API bool TCOD_sys_delete_file(const char *path);
 TCODLIB_API bool TCOD_sys_delete_directory(const char *path);
 TCODLIB_API bool TCOD_sys_is_directory(const char *path);
+#endif
 TCODLIB_API TCOD_list_t TCOD_sys_get_directory_content(const char *path, const char *pattern);
 TCODLIB_API bool TCOD_sys_file_exists(const char * filename, ...);
 TCODLIB_API bool TCOD_sys_read_file(const char *filename, unsigned char **buf, size_t *size);

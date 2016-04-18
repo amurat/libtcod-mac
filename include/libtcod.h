@@ -92,8 +92,17 @@
 #    define TCOD_FREEBSD32
 #  endif
 #elif defined (__APPLE__) && defined (__MACH__)
-#  define TCOD_MACOSX
-#  define TCOD_GCC
+#include "TargetConditionals.h"
+#if TARGET_IPHONE_SIMULATOR
+#define TCOD_IOS
+#elif TARGET_OS_IPHONE
+#define TCOD_IOS
+#elif TARGET_OS_MAC
+#define TCOD_MACOSX
+#else
+#   error "Unknown Apple platform"
+#endif
+//#  define TCOD_GCC
 #endif
 
 /* unicode rendering functions support */
@@ -161,7 +170,7 @@ TCODLIB_API int TCOD_strncasecmp(const char *s1, const char *s2, size_t n);
 #if defined(TCOD_WINDOWS)
 char *strcasestr (const char *haystack, const char *needle);
 #endif
-#if defined(TCOD_LINUX) || defined(TCOD_HAIKU) || defined(TCOD_FREEBSD) || defined(TCOD_MACOSX)
+#if defined(TCOD_LINUX) || defined(TCOD_HAIKU) || defined(TCOD_FREEBSD) || defined(TCOD_MACOSX) || defined(TCOD_IOS)
 #define vsnwprintf vswprintf
 #endif
 #ifdef TCOD_WINDOWS

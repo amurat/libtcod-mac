@@ -36,7 +36,14 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #elif defined (__APPLE__) && defined (__MACH__)
+#include "TargetConditionals.h"
+#if TARGET_IPHONE_SIMULATOR
+#elif TARGET_OS_IPHONE
+#elif TARGET_OS_MAC
 #include <ApplicationServices/ApplicationServices.h>
+#else
+#error "Unknown Apple platform"
+#endif
 #endif
 #include "libtcod.h"
 #include "libtcod_int.h"
@@ -614,7 +621,7 @@ char *TCOD_sys_clipboard_get()
 	}
 	return clipboardText;
 }
-#elif defined(TCOD_HAIKU) || defined(__ANDROID__)
+#elif defined(TCOD_HAIKU) || defined(__ANDROID__) || defined(TCOD_IOS)
 /* TODO */
 void TCOD_sys_clipboard_set(const char *value)
 {

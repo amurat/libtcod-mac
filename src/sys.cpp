@@ -91,6 +91,7 @@ void TCODSystem::getCharSize(int *w, int *h) {
 	TCOD_sys_get_char_size(w,h);
 }
 
+#ifndef IOS
 // filesystem stuff
 bool TCODSystem::createDirectory(const char *path) {
 	return TCOD_sys_create_directory(path) != 0;
@@ -107,6 +108,7 @@ bool TCODSystem::deleteDirectory(const char *path) {
 bool TCODSystem::isDirectory(const char *path) {
 	return TCOD_sys_is_directory(path) != 0;
 }
+#endif
 
 TCOD_list_t TCODSystem::getDirectoryContent(const char *path, const char *pattern) {
 	return TCOD_sys_get_directory_content(path,pattern);
